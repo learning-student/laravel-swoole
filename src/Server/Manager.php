@@ -271,7 +271,7 @@ class Manager
                 $this->pushMessage($server, $data['data']);
             // push async task to queue
             } elseif ($this->isAsyncTaskPayload($data)) {
-                (new SwooleTaskJob($this->container, $server, $data, $taskId, $srcWorkerId))->dispatch();
+                (new SwooleTaskJob($this->container, $server, $data, $taskId, $srcWorkerId))->fire();
             }
         } catch (Throwable $e) {
             $this->logServerError($e);
@@ -387,6 +387,7 @@ class Manager
         if (OS::is(OS::MAC_OS) || $this->isInTesting()) {
             return;
         }
+
         $serverName = 'swoole_http_server';
         $appName = $this->container->make('config')->get('app.name', 'Laravel');
 
