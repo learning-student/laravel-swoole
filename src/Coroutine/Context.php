@@ -74,8 +74,10 @@ class Context
 
     /**
      * Get data keys by current coroutine id.
+     *
+     * @return array
      */
-    public static function getDataKeys()
+    public static function getDataKeys() : array
     {
         return array_keys(static::$data[static::getCoroutineId()] ?? []);
     }

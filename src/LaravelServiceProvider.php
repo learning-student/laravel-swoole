@@ -35,9 +35,9 @@ class LaravelServiceProvider extends HttpServiceProvider
         require __DIR__ . '/../routes/laravel_routes.php';
     }
 
+
     /**
-     * Register access log middleware to container.
-     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @return void
      */
     protected function pushAccessLogMiddleware()

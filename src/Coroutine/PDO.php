@@ -13,7 +13,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use PDO as BasePDO;
-
+use Swoole\Coroutine\Mysql;
 /**
  * Class PDO
  */
@@ -49,7 +49,7 @@ class PDO extends BasePDO
      *
      * @throws \SwooleTW\Http\Coroutine\ConnectionException
      */
-    public function __construct(string $dsn, string $username = '', string $password = '', array $options = [])
+    public function __construct(string $dsn, string $password = '', string $username = '', array $options = [])
     {
         parent::__construct($dsn, $username, $password, $options);
         $this->setClient();
@@ -61,7 +61,7 @@ class PDO extends BasePDO
      */
     protected function setClient($client = null)
     {
-        $this->client = $client ?: new \Swoole\Coroutine\Mysql;
+        $this->client = $client ?: new Mysql();
     }
 
     /**

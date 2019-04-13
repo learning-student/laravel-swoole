@@ -8,13 +8,15 @@ use SwooleTW\Http\Table\SwooleTable;
 trait InteractsWithSwooleQueue
 {
     /**
-     * Indicates if a packet is swoole's queue job.
      *
-     * @param mixed
+     * Indicates if a packet is swoole's queue job.
+     * @param $packet
+     * @return bool
+     *
      */
-    protected function isSwooleQueuePacket($packet)
+    protected function isSwooleQueuePacket($packet) : bool
     {
-        if (! is_string($packet)) {
+        if (!is_string($packet)) {
             return false;
         }
 

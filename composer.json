@@ -22,6 +22,9 @@
   ],
   "require": {
     "php": "^7.2",
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "ext-swoole": "*",
     "illuminate/console": "~5.4",
     "illuminate/contracts": "~5.4",
     "illuminate/http": "~5.4",
