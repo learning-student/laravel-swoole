@@ -6,7 +6,7 @@ namespace SwooleTW\Http\Helpers;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 
-class Dump
+final class Dump
 {
 
     /**

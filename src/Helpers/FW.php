@@ -67,8 +67,10 @@ final class FW
      *
      * @return string
      */
-    public static function version(string $expression = self::VERSION_WITHOUT_BUG_FIX): string
+    public static function version(string $expression = null): string
     {
+        $expression = $expression ?? self::VERSION_WITHOUT_BUG_FIX;
+
         if (static::is(static::LARAVEL)) {
             return static::extractVersion(constant('Illuminate\Foundation\Application::VERSION'), $expression);
         }
