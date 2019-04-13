@@ -45,7 +45,7 @@ class SocketIOController
     /**
      * @return JsonResponse
      */
-    public function reject(): JsonResponse
+    public function reject()
     {
         return response()->json(
             [
