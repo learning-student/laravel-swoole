@@ -27,7 +27,7 @@ use Symfony\Component\Debug\Exception\FatalThrowableError;
 /**
  * Class Manager
  */
-class Manager
+class Manager extends Event
 {
     use InteractsWithWebsocket,
         InteractsWithSwooleTable,
@@ -50,6 +50,9 @@ class Manager
      * @var string
      */
     protected $basePath;
+
+
+
 
     /**
      * Server events.
@@ -89,6 +92,9 @@ class Manager
         $this->setBasepath($basePath);
         $this->initialize();
     }
+
+
+
 
     /**
      * Run swoole server.
@@ -189,6 +195,11 @@ class Manager
             $this->loadWebsocketRoutes();
         }
     }
+
+
+
+
+
 
     /**
      * "onRequest" listener.

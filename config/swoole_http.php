@@ -10,24 +10,38 @@ return [
     |
     */
     'server' => [
+
+        // swoole host
         'host' => env('SWOOLE_HTTP_HOST', '127.0.0.1'),
+
+        // swoole port
         'port' => env('SWOOLE_HTTP_PORT', '1215'),
+
+        // public directory path
         'public_path' => base_path('public'),
+
         // Determine if to use swoole to respond request for static files
         'handle_static_files' => env('SWOOLE_HANDLE_STATIC', true),
         'access_log' => env('SWOOLE_HTTP_ACCESS_LOG', false),
+
         // You must add --enable-openssl while compiling Swoole
         // Put `SWOOLE_SOCK_TCP | SWOOLE_SSL` if you want to enable SSL
         'socket_type' => SWOOLE_SOCK_TCP,
+
         'process_type' => SWOOLE_PROCESS,
+
         'options' => [
             'pid_file' => env('SWOOLE_HTTP_PID_FILE', base_path('storage/logs/swoole_http.pid')),
             'log_file' => env('SWOOLE_HTTP_LOG_FILE', base_path('storage/logs/swoole_http.log')),
             'daemonize' => env('SWOOLE_HTTP_DAEMONIZE', false),
+
+
             // Normally this value should be 1~4 times larger according to your cpu cores.
+            // swoole_cpu_num returns your cpu number, you can overwrite it of course
             'reactor_num' => env('SWOOLE_HTTP_REACTOR_NUM', swoole_cpu_num()),
             'worker_num' => env('SWOOLE_HTTP_WORKER_NUM', swoole_cpu_num()),
             'task_worker_num' => env('SWOOLE_HTTP_TASK_WORKER_NUM', swoole_cpu_num()),
+
             // The data to receive can't be larger than buffer_output_size.
             'package_max_length' => 20 * 1024 * 1024,
             // The data to send can't be larger than buffer_output_size.
@@ -79,9 +93,23 @@ return [
     |--------------------------------------------------------------------------
     */
     'pre_resolved' => [
-        'view', 'files', 'session', 'session.store', 'routes',
-        'db', 'db.factory', 'cache', 'cache.store', 'config', 'cookie',
-        'encrypter', 'hash', 'router', 'translator', 'url', 'log',
+        'view',
+        'files',
+        'session',
+        'session.store',
+        'routes',
+        'db',
+        'db.factory',
+        'cache',
+        'cache.store',
+        'config',
+        'cookie',
+        'encrypter',
+        'hash',
+        'router',
+        'translator',
+        'url',
+        'log',
     ],
 
     /*

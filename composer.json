@@ -9,6 +9,15 @@
     "http",
     "server"
   ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../Anonym-Cache",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -18,6 +27,10 @@
     {
       "name": "Huang Yi",
       "email": "coodeer@163.com"
+    },
+    {
+      "name": "Vahit Şerif Sağlam",
+      "email": "vahit.serif119@gmail.com"
     }
   ],
   "require": {
@@ -29,7 +42,8 @@
     "illuminate/contracts": "~5.4",
     "illuminate/http": "~5.4",
     "illuminate/support": "~5.4",
-    "predis/predis": "^1.1"
+    "predis/predis": "^1.1",
+    "owuan/owuan-cache": "@dev"
   },
   "require-dev": {
     "laravel/lumen-framework": "~5.4",
