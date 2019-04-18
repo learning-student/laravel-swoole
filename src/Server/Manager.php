@@ -8,7 +8,6 @@ use Swoole\Process;
 use Swoole\Server\Task;
 use Illuminate\Support\Str;
 use SwooleTW\Http\Helpers\OS;
-use SwooleTW\Http\Server\Sandbox;
 use SwooleTW\Http\Task\SwooleTaskJob;
 use Illuminate\Support\Facades\Facade;
 use SwooleTW\Http\Websocket\Websocket;
@@ -52,8 +51,6 @@ class Manager extends Event
     protected $basePath;
 
 
-
-
     /**
      * Server events.
      *
@@ -92,8 +89,6 @@ class Manager extends Event
         $this->setBasepath($basePath);
         $this->initialize();
     }
-
-
 
 
     /**
@@ -197,10 +192,6 @@ class Manager extends Event
     }
 
 
-
-
-
-
     /**
      * "onRequest" listener.
      *
@@ -212,15 +203,38 @@ class Manager extends Event
         $this->app->make('events')->dispatch('swoole.request');
 
         $this->resetOnRequest();
-        $sandbox = $this->app->make(Sandbox::class);
+
+        // create sandbox
         $handleStatic = $this->container->make('config')->get('swoole_http.handle_static_files', true);
         $publicPath = $this->container->make('config')->get('swoole_http.server.public_path', base_path('public'));
 
         try {
+
+
             // handle static file request first
             if ($handleStatic && Request::handleStatic($swooleRequest, $swooleResponse, $publicPath)) {
                 return;
             }
+
+
+            // run through pre events, and stop if a response returned
+            // this is useful to cache, with cache we won't have to go through all laravel
+            // lifecycle and send cached results
+            // of course we don't want to cache static files, so this line always
+            // should come after Request::handleStatic
+            $response = $this->runPreEventsWithParams('request', [
+                $swooleRequest,
+                $swooleResponse
+            ], true);
+
+
+            if ($response instanceof \Illuminate\Http\Response) {
+                Response::make($response, $swooleResponse)->send();
+            }
+
+            // we don't need to create sandbox to be created up there,
+            $sandbox = $this->app->make(Sandbox::class);
+
             // transform swoole request to illuminate request
             $illuminateRequest = Request::make($swooleRequest)->toIlluminate();
 
@@ -235,6 +249,16 @@ class Manager extends Event
 
             // send response
             Response::make($illuminateResponse, $swooleResponse)->send();
+
+            // run through post events
+
+            $this->runPreEventsWithParams('request', [
+                $swooleRequest,
+                $swooleResponse,
+                $illuminateRequest,
+                $illuminateResponse
+            ]);
+            
         } catch (Throwable $e) {
             try {
                 $exceptionResponse = $this->app
@@ -280,7 +304,7 @@ class Manager extends Event
             // push websocket message
             if ($this->isWebsocketPushPayload($data)) {
                 $this->pushMessage($server, $data['data']);
-            // push async task to queue
+                // push async task to queue
             } elseif ($this->isAsyncTaskPayload($data)) {
                 (new SwooleTaskJob($this->container, $server, $data, $taskId, $srcWorkerId))->fire();
             }
@@ -453,7 +477,7 @@ class Manager extends Event
      */
     protected function normalizeException(Throwable $e)
     {
-        if (! $e instanceof Exception) {
+        if (!$e instanceof Exception) {
             $e = new FatalThrowableError($e);
         }
 

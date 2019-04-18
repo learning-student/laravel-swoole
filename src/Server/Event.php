@@ -4,8 +4,7 @@
 namespace SwooleTW\Http\Server;
 
 
-use SwooleTW\Http\Transformers\Response;
-
+use Illuminate\Http\Response;
 
 /**
  * Class Event
