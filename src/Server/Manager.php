@@ -87,7 +87,6 @@ class Manager extends Event
         $this->container = $container;
         $this->setFramework($framework);
         $this->setBasepath($basePath);
-        $this->initialize();
     }
 
 
@@ -96,6 +95,11 @@ class Manager extends Event
      */
     public function run()
     {
+
+        // initialize  listeners and server
+        $this->initialize();
+
+
         $this->container->make(Server::class)->start();
     }
 
@@ -122,8 +126,10 @@ class Manager extends Event
      */
     protected function setSwooleServerListeners()
     {
+
         foreach ($this->events as $event) {
             $listener = Str::camel("on_$event");
+
             $callback = method_exists($this, $listener) ? [$this, $listener] : function () use ($event) {
                 $this->container->make('events')->dispatch("swoole.$event", func_get_args());
             };
@@ -208,6 +214,8 @@ class Manager extends Event
         $handleStatic = $this->container->make('config')->get('swoole_http.handle_static_files', true);
         $publicPath = $this->container->make('config')->get('swoole_http.server.public_path', base_path('public'));
 
+        // we don't need to create sandbox to be created up there,
+        $sandbox = $this->app->make(Sandbox::class);
         try {
 
 
@@ -230,10 +238,11 @@ class Manager extends Event
 
             if ($response instanceof \Illuminate\Http\Response) {
                 Response::make($response, $swooleResponse)->send();
+
+                return;
             }
 
-            // we don't need to create sandbox to be created up there,
-            $sandbox = $this->app->make(Sandbox::class);
+
 
             // transform swoole request to illuminate request
             $illuminateRequest = Request::make($swooleRequest)->toIlluminate();
@@ -252,7 +261,7 @@ class Manager extends Event
 
             // run through post events
 
-            $this->runPreEventsWithParams('request', [
+            $this->runPostEventsWithParams('request', [
                 $swooleRequest,
                 $swooleResponse,
                 $illuminateRequest,
@@ -260,6 +269,7 @@ class Manager extends Event
             ]);
             
         } catch (Throwable $e) {
+            dd($e);
             try {
                 $exceptionResponse = $this->app
                     ->make(ExceptionHandler::class)

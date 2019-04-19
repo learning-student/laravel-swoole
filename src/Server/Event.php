@@ -76,7 +76,9 @@ abstract class Event
                 $params
             );
 
-            if ($shouldStopOnResponse && $response instanceof Response) {
+
+            // laravel and lumen shares same response object
+            if ($shouldStopOnResponse &&  $response instanceof Response) {
                 return $response;
             }
         }

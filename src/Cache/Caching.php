@@ -6,6 +6,7 @@ namespace SwooleTW\Http\Cache;
 use Anonym\Components\Cache\Cache;
 use Anonym\Components\Cache\CacheInterface;
 use Anonym\Components\Cache\DriverAdapterInterface;
+use Anonym\Components\Cache\DriverNotInstalledException;
 use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -46,6 +47,7 @@ class Caching
 
     /**
      * @param array $config
+     * @throws DriverNotInstalledException
      */
     private function initializeCacheDriverWithConfigs(array $config): void
     {
@@ -146,7 +148,7 @@ class Caching
 
 
             $this->caching->set(
-                $swooleRequest->server['request_url'],
+                $swooleRequest->server['request_uri'],
                 $laravelResponse,
                 $this->config['lifespan'] ?? 3600
             );

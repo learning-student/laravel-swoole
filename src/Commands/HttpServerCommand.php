@@ -121,7 +121,9 @@ class HttpServerCommand extends Command
 
         if ($hotReloadEnabled) {
             $manager->addProcess($this->getHotReloadProcess($server));
+
         }
+
 
         $manager->run();
     }
